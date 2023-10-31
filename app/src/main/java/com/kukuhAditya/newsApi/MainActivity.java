@@ -2,11 +2,13 @@ package com.kukuhAditya.newsApi;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
 import android.os.Bundle;
 
+import com.google.android.material.tabs.TabLayout;
 import com.kukuhAditya.newsApi.Models.NewsApiResponse;
 import com.kukuhAditya.newsApi.Models.NewsHeadlines;
 
@@ -28,7 +30,6 @@ public class MainActivity extends AppCompatActivity {
 
         RequestManager manager = new RequestManager(this);
         manager.getNewsHeadLines(listener, "general", null);
-
     }
 
     private final OnFetchDataListener<NewsApiResponse> listener = new OnFetchDataListener<NewsApiResponse>() {
@@ -45,11 +46,40 @@ public class MainActivity extends AppCompatActivity {
     };
 
     private void showNews(List<NewsHeadlines> list) {
+
+
         recyclerView = findViewById(R.id.recycler_main);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 1));
         adapter = new CustomAdapter(this, list);
         recyclerView.setAdapter(adapter);
+
+        TabLayout tab = findViewById(R.id.tabLayout);
+        int tabHeight = tab.getHeight();
+
+        int pl = recyclerView.getPaddingLeft();
+        int pr = recyclerView.getPaddingRight();
+        int pu = recyclerView.getPaddingTop();
+
+        recyclerView.setPadding(pl,pu,pr, tabHeight);
+
+
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                GridLayoutManager layoutManager = (GridLayoutManager) recyclerView.getLayoutManager();
+                int visibleItemCount = layoutManager.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
+
+                if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
+                        && totalItemCount > 0) {
+                    System.out.println ("Refresh");
+                }
+            }
+        });
     }
 
 }
