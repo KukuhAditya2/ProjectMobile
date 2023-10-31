@@ -20,11 +20,13 @@
             android:layout_margin="8dp"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginRight="30dp"
+            android:layout_marginLeft="15dp"
             android:layout_weight="2">
 
             <TextView
                 android:id="@+id/text_title"
-                android:textSize="22sp"
+                android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:maxLines="3"
@@ -34,7 +36,7 @@
             </TextView>
             <TextView
                 android:id="@+id/text_source"
-                android:textSize="18sp"
+                android:textSize="11sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:maxLines="1"
@@ -48,9 +50,14 @@
             android:id="@+id/img_headline"
             android:layout_weight="1"
             android:src="@drawable/not_available"
-            android:scaleType="centerCrop"
             android:layout_width="0dp"
-            android:layout_height="match_parent">
+            android:layout_margin="10dp"
+            android:layout_height="match_parent"
+
+            android:scaleType="centerCrop"
+            android:layout_gravity="center"
+
+            >
 
         </ImageView>
     </LinearLayout>
