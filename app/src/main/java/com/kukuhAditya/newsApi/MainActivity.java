@@ -6,8 +6,10 @@ import androidx.recyclerview.widget.ItemTouchHelper;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.app.ProgressDialog;
+import android.content.Intent;
 import android.os.Bundle;
 
+import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.kukuhAditya.newsApi.Models.NewsApiResponse;
 import com.kukuhAditya.newsApi.Models.NewsHeadlines;
@@ -19,6 +21,8 @@ public class MainActivity extends AppCompatActivity {
     CustomAdapter adapter;
     ProgressDialog dialog;
 
+    TabLayout tab;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -27,6 +31,34 @@ public class MainActivity extends AppCompatActivity {
         dialog = new ProgressDialog(this);
         dialog.setTitle("Fetching news articles..");
         dialog.show();
+
+        tab = findViewById(R.id.tabLayout);
+        tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+             @Override
+             public void onTabSelected(TabLayout.Tab tab) {
+                 switch(tab.getPosition()){
+                     case 0: // Recent
+                     case 1 : // Highlight
+                         break;
+
+                     case 2 :
+                         Intent aboutV = new Intent(MainActivity.this, AboutActivity.class);
+                         startActivity(aboutV);
+                 }
+             }
+
+             @Override
+             public void onTabUnselected(TabLayout.Tab tab) {
+
+             }
+
+             @Override
+             public void onTabReselected(TabLayout.Tab tab) {
+
+             }
+         }
+        );
+
 
         RequestManager manager = new RequestManager(this);
         manager.getNewsHeadLines(listener, "general", null);
