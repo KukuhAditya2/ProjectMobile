@@ -40,17 +40,18 @@
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Highlight" />
+            android:icon="@drawable/baseline_refresh_24"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Recent" />
+            android:icon="@drawable/baseline_newspaper_24"/>
 
         <com.google.android.material.tabs.TabItem
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="About Us" />
+
+            android:icon="@drawable/baseline_info_24"/>
     </com.google.android.material.tabs.TabLayout>
 
 

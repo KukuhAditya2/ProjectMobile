@@ -1,5 +1,6 @@
 package com.kukuhAditya.newsApi;
 
+import android.content.Intent;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -13,6 +14,7 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
     TextView text_title, text_source;
     ImageView img_headline;
     CardView cardView;
+    String url;
     public CustomViewHolder(@NonNull View itemView) {
         super(itemView);
 
@@ -21,5 +23,12 @@ public class CustomViewHolder extends RecyclerView.ViewHolder {
         img_headline = itemView.findViewById(R.id.img_headline);
         cardView = itemView.findViewById(R.id.main_container);
 
+        cardView.setOnClickListener(v -> {
+                Intent detailView = new Intent(v.getContext(), ViewActivity.class);
+                detailView.putExtra("link", url);
+
+                v.getContext().startActivity(detailView);
+            }
+        );
     }
 }
