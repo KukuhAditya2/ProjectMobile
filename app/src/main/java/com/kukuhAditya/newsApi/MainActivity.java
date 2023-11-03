@@ -23,8 +23,17 @@ public class MainActivity extends AppCompatActivity {
 
     TabLayout tab;
 
+    private int oldTab;
+    @Override
+    protected void onResume() {
+        super.onResume();
+        tab.getTabAt(oldTab).select();
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        System.out.println("fubarbb");
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -39,6 +48,7 @@ public class MainActivity extends AppCompatActivity {
                  switch(tab.getPosition()){
                      case 0: // Recent
                      case 1 : // Highlight
+                         oldTab = tab.getPosition();
                          break;
 
                      case 2 :
