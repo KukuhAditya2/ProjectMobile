@@ -32,8 +32,6 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        System.out.println("fubarbb");
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
