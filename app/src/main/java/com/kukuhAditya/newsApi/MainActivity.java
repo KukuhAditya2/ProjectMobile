@@ -113,6 +113,8 @@ public class MainActivity extends AppCompatActivity {
             switch (e.getAction()) {
                 case MotionEvent.ACTION_UP:
                     if(prop.get("REFRESH")){
+                        dialog.show();
+
                         System.out.println("foo");
                         RequestManager manager = new RequestManager(MainActivity.this);
                         manager.getNewsHeadLines(listener, "general", null);
@@ -134,7 +136,8 @@ public class MainActivity extends AppCompatActivity {
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
-                if (firstVisibleItemPosition == 0 && !recyclerView.canScrollVertically(-1)){
+                if (firstVisibleItemPosition == 0 && !recyclerView.canScrollVertically(-1) && dy < 0){
+                    System.out.println(dy);
                     prop.put("REFRESH", true);
                     // The user has scrolled to the top
                     // You can now take appropriate actions.
