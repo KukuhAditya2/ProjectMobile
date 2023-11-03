@@ -8,13 +8,17 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MotionEvent;
+import android.view.View;
 
 import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 import com.kukuhAditya.newsApi.Models.NewsApiResponse;
 import com.kukuhAditya.newsApi.Models.NewsHeadlines;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
@@ -103,6 +107,22 @@ public class MainActivity extends AppCompatActivity {
 
         recyclerView.setPadding(pl,pu,pr, tabHeight);
 
+        Map<String, Boolean> prop = new HashMap<>();
+
+        recyclerView.setOnTouchListener((v,e) -> {
+            switch (e.getAction()) {
+                case MotionEvent.ACTION_UP:
+                    if(prop.get("REFRESH")){
+                        System.out.println("foo");
+                        RequestManager manager = new RequestManager(MainActivity.this);
+                        manager.getNewsHeadLines(listener, "general", null);
+
+                        return true;
+                    }
+            }
+
+            return false;
+        });
 
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -114,9 +134,19 @@ public class MainActivity extends AppCompatActivity {
                 int totalItemCount = layoutManager.getItemCount();
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
+                if (firstVisibleItemPosition == 0 && !recyclerView.canScrollVertically(-1)){
+                    prop.put("REFRESH", true);
+                    // The user has scrolled to the top
+                    // You can now take appropriate actions.
+                }else{
+                    prop.put("REFRESH", false);
+                }
+
+                // Swipe to bottom
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && totalItemCount > 0) {
-                    System.out.println ("Refresh");
+
+
                 }
             }
         });
