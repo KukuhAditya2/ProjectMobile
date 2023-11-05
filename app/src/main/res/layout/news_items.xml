@@ -55,11 +55,8 @@
             android:layout_height="match_parent"
 
             android:scaleType="centerCrop"
-            android:layout_gravity="center"
+            android:layout_gravity="center" />
 
-            >
-
-        </ImageView>
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>
