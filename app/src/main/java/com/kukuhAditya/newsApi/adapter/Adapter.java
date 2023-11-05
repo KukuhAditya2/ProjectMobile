@@ -15,6 +15,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Adapter for RecyclerView
+ * @param <T> Entity Data
+ * @param <V> Holder
+ */
 public final class Adapter<T, V extends AbstractHolder<T>> extends RecyclerView.Adapter<V>{
 
     private final List<T> entries;

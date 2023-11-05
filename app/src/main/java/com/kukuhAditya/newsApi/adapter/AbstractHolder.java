@@ -5,6 +5,10 @@ import android.view.View;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+/**
+ * Base abstract class
+ * @param <T> Entity data
+ */
 public abstract class AbstractHolder<T> extends RecyclerView.ViewHolder{
 
     private T entity;

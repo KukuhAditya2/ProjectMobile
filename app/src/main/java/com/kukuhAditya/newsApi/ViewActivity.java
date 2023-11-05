@@ -5,6 +5,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.webkit.WebView;
 
+/**
+ * Used to show full web page of the news
+ */
 public class ViewActivity extends AppCompatActivity {
 
     @Override
