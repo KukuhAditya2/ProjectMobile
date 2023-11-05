@@ -14,6 +14,9 @@ import com.kukuhAditya.newsApi.ViewActivity;
 import com.kukuhAditya.newsApi.adapter.AbstractHolder;
 import com.squareup.picasso.Picasso;
 
+/**
+ * Used to hold individual news data
+ */
 public class NewsAdapterHolder extends AbstractHolder<NewsHeadlines> {
     private final TextView text_title, text_source;
     private final ImageView img_headline;

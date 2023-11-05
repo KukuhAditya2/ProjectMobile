@@ -9,6 +9,9 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.kukuhAditya.newsApi.R;
 
+/**
+ * Used to show about view in the third tab (index 2)
+ */
 public class AboutView extends ConstraintLayout {
     public AboutView(Context context) {
         super(context);

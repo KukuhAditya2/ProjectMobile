@@ -14,6 +14,9 @@ import com.kukuhAditya.newsApi.R;
 import com.kukuhAditya.newsApi.adapter.AbstractHolder;
 import com.kukuhAditya.newsApi.misc.SharedState;
 
+/**
+ * Used to hold individual search category
+ */
 public class CategoryHolder extends AbstractHolder<String> {
 
     private final ToggleButton catNameButton;

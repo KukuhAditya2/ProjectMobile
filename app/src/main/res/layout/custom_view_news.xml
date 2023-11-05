@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--Custom view for news table container-->
+<!--    Used to make sure layout can be embedded in another view with fully functional-->
+<!--    class that belongs to the xml. (Just like Activity in another activity)-->
+<com.kukuhAditya.newsApi.layout.NewsView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" />
