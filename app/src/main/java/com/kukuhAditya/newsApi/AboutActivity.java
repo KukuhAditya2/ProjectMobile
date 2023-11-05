@@ -5,9 +5,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.List;
-import java.util.ArrayList;
 
 public class AboutActivity extends AppCompatActivity {
 ListView Member;
@@ -15,7 +12,7 @@ ListView Member;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_about);
+        setContentView(R.layout.view_about);
 
         // Daftar anggota kelompok 1
         String[] members = {

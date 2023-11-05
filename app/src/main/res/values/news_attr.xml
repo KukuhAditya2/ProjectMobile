@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="newsType" format="enum">
+        <enum name="highlight" value="0" />
+        <enum name="recent" value="1"/>
+    </attr>
+</resources>
