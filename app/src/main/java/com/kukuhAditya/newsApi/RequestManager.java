@@ -26,7 +26,6 @@ public class RequestManager {
             .addConverterFactory(GsonConverterFactory.create())
             .build();
 
-    boolean refresh = false;
     public void getNewsHeadLines(NewsView.NewsListener listener, String query) {
         CallNewsApi callNewsApi = retrofit.create(CallNewsApi.class);
 
@@ -38,8 +37,30 @@ public class RequestManager {
             }
 
             listener.reset();
-            refresh = true;
             call  = callNewsApi.callEverything( query, context.getString(R.string.api_key));
+
+            if(call == null){
+                return;
+            }
+
+            try {
+                call.enqueue(new Callback<NewsApiResponse>() {
+                    @Override
+                    public void onResponse(Call<NewsApiResponse> call, Response<NewsApiResponse> response) {
+
+                        listener.onFetchData(response.body().getArticles(), response.message());
+                        listener.refresh();
+                    }
+
+                    @Override
+                    public void onFailure(Call<NewsApiResponse> call, Throwable t) {
+                        listener.onError("Request Failed!");
+                    }
+                });
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
         }else{
 
 
@@ -55,13 +76,15 @@ public class RequestManager {
 
             List<String> q = new LinkedList<>();
 
-            q.add("general");
-
             catList.forEach(v -> {
                 if((boolean)sharedState.getSetting(v, false)){
                     q.add(v);
                 }
             });
+
+            if(q.isEmpty()){
+                q.add("general");
+            }
 
             int i = -1;
             for(String qr : q){
@@ -69,44 +92,32 @@ public class RequestManager {
                     listener.reset();
                 }
 
-                if(i == q.size() - 1){
-                    refresh = true;
-                }
-
                 call  = callNewsApi.callHeadlines("us", qr, query, context.getString(R.string.api_key));
+
+                if(call == null){
+                    return;
+                }
+
+                try {
+                    call.enqueue(new Callback<NewsApiResponse>() {
+                        @Override
+                        public void onResponse(Call<NewsApiResponse> call, Response<NewsApiResponse> response) {
+
+                            listener.onFetchData(response.body().getArticles(), response.message());
+                            listener.refresh();
+                        }
+
+                        @Override
+                        public void onFailure(Call<NewsApiResponse> call, Throwable t) {
+                            listener.onError("Request Failed!");
+                        }
+                    });
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-
-
         }
-
-        if(call == null){
-            return;
-        }
-
-        try {
-            call.enqueue(new Callback<NewsApiResponse>() {
-                @Override
-                public void onResponse(Call<NewsApiResponse> call, Response<NewsApiResponse> response) {
-
-                    listener.onFetchData(response.body().getArticles(), response.message());
-
-                    if(refresh){
-                        listener.refresh();
-                        refresh = false;
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Call<NewsApiResponse> call, Throwable t) {
-                    listener.onError("Request Failed!");
-                }
-            });
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-
 
 
     }
