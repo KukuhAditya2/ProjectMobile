@@ -116,6 +116,8 @@ public class MainActivity extends AppCompatActivity {
                             sharedState.putSetting("TYPE", 0);
                             aboutLayout.setVisibility(View.INVISIBLE);
                             searchField.setVisibility(View.VISIBLE);
+                            searchField.setText(null);
+                            sharedState.putSetting("SEARCHQ", "");
                             news.setVisibility(View.VISIBLE);
 
                             news.refreshNews();
@@ -125,6 +127,8 @@ public class MainActivity extends AppCompatActivity {
                             catView.setVisibility(View.VISIBLE);
 
                             searchField.setVisibility(View.VISIBLE);
+                            searchField.setText(null);
+                            sharedState.putSetting("SEARCHQ", "");
                             sharedState.putSetting("TYPE", 1);
                             aboutLayout.setVisibility(View.VISIBLE);
                             news.setVisibility(View.VISIBLE);
