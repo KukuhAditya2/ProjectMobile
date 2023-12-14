@@ -69,8 +69,7 @@ public class NewsView extends LinearLayout {
             switch (e.getAction()) {
                 case MotionEvent.ACTION_UP:
                     if(prop.get("REFRESH")){
-                        manager.getNewsHeadLines(listener, null);
-
+                        refreshNews();
                         return true;
                     }
             }
