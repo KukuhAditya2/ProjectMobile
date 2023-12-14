@@ -21,7 +21,9 @@ import com.kukuhAditya.newsApi.adapter.Adapter;
 import com.kukuhAditya.newsApi.adapter.impl.NewsAdapterHolder;
 import com.kukuhAditya.newsApi.misc.SharedState;
 
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -51,46 +53,23 @@ public class NewsView extends LinearLayout {
     RecyclerView newsView;
 
     ProgressDialog dialog;
-
-    private void init(List<NewsHeadlines> list){
-        newsView.setHasFixedSize(true);
-        newsView.setLayoutManager(new GridLayoutManager(this.getContext(), 1));
-
-
-        Adapter<NewsHeadlines, NewsAdapterHolder> newsAdapter;
-        newsAdapter = new Adapter(this.getContext(), R.layout.news_items, NewsAdapterHolder.class, list);
-
-        newsView.setAdapter(newsAdapter);
-    }
-
-    /**
-     * Control news here. Search query, category, type, etc should be visible here
-     */
-    public void refreshNews(){
-        String   searchQuery = (String) sharedState.getSetting("SEARCH", "");
-        NewsType type        = NewsType.values[(Integer) sharedState.getSetting("TYPE", 0)];
-
+    NewsListener listener;
+    RequestManager manager;
+    public void initialize(){
+        dialog = new ProgressDialog(this.getContext());
+        dialog.setTitle("Fetching news articles..");
 
         newsView = findViewById(R.id.news_container);
 
-        dialog = new ProgressDialog(this.getContext());
-        dialog.setTitle("Fetching news articles..");
-        dialog.show();
-
-        RequestManager manager = new RequestManager(this.getContext());
-
-        String[] cat = new String[]{"general", "sports"};
-
-        manager.getNewsHeadLines(listener, cat[type.ordinal()], null);
+        manager = new RequestManager(this.getContext());
+        listener = new NewsListener(dialog, newsView, this.getContext());
 
         Map<String, Boolean> prop = new HashMap<>();
-
         newsView.setOnTouchListener((v,e) -> {
             switch (e.getAction()) {
                 case MotionEvent.ACTION_UP:
                     if(prop.get("REFRESH")){
-                        dialog.show();
-                        manager.getNewsHeadLines(listener, cat[type.ordinal()], null);
+                        manager.getNewsHeadLines(listener, null);
 
                         return true;
                     }
@@ -98,7 +77,6 @@ public class NewsView extends LinearLayout {
 
             return false;
         });
-
 
         newsView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -111,7 +89,6 @@ public class NewsView extends LinearLayout {
                 int firstVisibleItemPosition = layoutManager.findFirstVisibleItemPosition();
 
                 if (firstVisibleItemPosition == 0 && !recyclerView.canScrollVertically(-1) && dy < 0){
-                    System.out.println(dy);
                     prop.put("REFRESH", true);
                     // The user has scrolled to the top
                     // You can now take appropriate actions.
@@ -122,27 +99,72 @@ public class NewsView extends LinearLayout {
                 // Swipe to bottom
                 if ((visibleItemCount + firstVisibleItemPosition) >= totalItemCount
                         && totalItemCount > 0) {
-
-
                 }
             }
         });
+
+    }
+
+    /**
+     * Control news here. Search query, category, type, etc should be visible here
+     */
+    public void refreshNews(){
+
+        String   searchQuery = (String) sharedState.getSetting("SEARCH", "");
+        NewsType type        = NewsType.values[(Integer) sharedState.getSetting("TYPE", 0)];
+
+        dialog.show();
+
+
+        String q = (String)sharedState.getSetting("SEARCHQ", "");
+
+        manager.getNewsHeadLines(listener,  q);
     }
 
     private void captureGesture(){
 
     }
 
-    private final OnFetchDataListener<NewsApiResponse> listener = new OnFetchDataListener<NewsApiResponse>() {
-        @Override
-        public void onFetchData(List<NewsHeadlines> list, String message) {
-            init(list);
+    public static class NewsListener implements OnFetchDataListener<NewsApiResponse> {
+
+        private final ProgressDialog dialog;
+        private final RecyclerView newsView;
+        private final Context context;
+        NewsListener(ProgressDialog dialog, RecyclerView newsView, Context context) {
+            this.dialog = dialog;
+            this.newsView = newsView;
+            this.context = context;
+        }
+
+        private List<NewsHeadlines> news = new LinkedList<>();
+        public void reset(){
+            news.clear();
+        }
+        public synchronized void refresh(){
+
+            Collections.sort(news, (a,b) -> b.getPublishedAt().compareTo(a.getPublishedAt()));
+
+            newsView.setHasFixedSize(true);
+            newsView.setLayoutManager(new GridLayoutManager(context, 1));
+
+            Adapter<NewsHeadlines, NewsAdapterHolder> newsAdapter;
+            newsAdapter = new Adapter(context, R.layout.news_items, NewsAdapterHolder.class, news);
+
+            newsView.setAdapter(newsAdapter);
+
             dialog.dismiss();
+        }
+
+        @Override
+        public synchronized void onFetchData(List<NewsHeadlines> list, String message) {
+            synchronized (news) {
+                list.forEach(v -> news.add(v));
+            }
         }
 
         @Override
         public void onError(String message) {
 
         }
-    };
+    }
 }

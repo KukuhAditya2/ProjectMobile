@@ -11,9 +11,12 @@ import android.os.Bundle;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.material.tabs.TabLayout;
 import com.kukuhAditya.newsApi.Models.NewsApiResponse;
@@ -52,16 +55,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         NewsView news = findViewById(R.id.newsTable);
+        news.initialize();
         news.refreshNews();
 
         catView = findViewById(R.id.cat_list);
+        catView.setVisibility(View.GONE);
         catView.setHasFixedSize(true);
         catView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,  false));
 
         List<String> catList = List.of(
                 "business",
                 "entertainment",
-                "general",
                 "health",
                 "science",
                 "sports",
@@ -81,30 +85,21 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-
-
-
-
-
-
-
-
         searchField = findViewById(R.id.searchBox);
-        searchField.setOnKeyListener((v,k,e) -> {
-            if ((e.getAction() == e.ACTION_DOWN) && (k == KeyEvent.KEYCODE_ENTER)) {
-                boolean state = (boolean) SharedState.getInstance().getSetting("foo", false);
 
-                try {
-                    InputMethodManager imm = (InputMethodManager)getSystemService(INPUT_METHOD_SERVICE);
-                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                } catch (Exception ex) {
-                    // TODO: handle exception
+
+        searchField.setOnEditorActionListener(new TextView.OnEditorActionListener() {
+            @Override
+            public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+                boolean handled = false;
+                if (actionId == EditorInfo.IME_ACTION_DONE) {
+                    sharedState.putSetting("SEARCHQ", searchField.getText().toString());
+                    news.refreshNews();
+                    return true;
                 }
-
-                return true;
+                return false;
             }
-            return false;
-            });
+        });
 
         tab = findViewById(R.id.tabLayout);
         tab.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
@@ -112,22 +107,39 @@ public class MainActivity extends AppCompatActivity {
                 public void onTabSelected(TabLayout.Tab tab) {
                     AboutView aboutLayout = findViewById(R.id.aboutView);
                     LinearLayout newsLayout = findViewById(R.id.newsView);
+                    newsLayout.setVisibility(View.INVISIBLE);
 
                     switch(tab.getPosition()){
                         case 0: // Recent
-                        case 1 : // Highlight
-                            oldTab = tab.getPosition();
+                            catView.setVisibility(View.GONE);
 
-                            sharedState.putSetting("TYPE", oldTab);
+                            sharedState.putSetting("TYPE", 0);
                             aboutLayout.setVisibility(View.INVISIBLE);
-                            newsLayout.setVisibility(View.VISIBLE);
+                            searchField.setVisibility(View.VISIBLE);
+                            news.setVisibility(View.VISIBLE);
+
+                            news.refreshNews();
+                            break;
+
+                        case 1 : // Highlight
+                            catView.setVisibility(View.VISIBLE);
+
+                            searchField.setVisibility(View.VISIBLE);
+                            sharedState.putSetting("TYPE", 1);
+                            aboutLayout.setVisibility(View.VISIBLE);
+                            news.setVisibility(View.VISIBLE);
 
                             news.refreshNews();
                             break;
 
                         case 2 :
+                            catView.setVisibility(View.GONE);
+                            news.setVisibility(View.GONE);
+                            searchField.setVisibility(View.GONE);
+
                             aboutLayout.setVisibility(View.VISIBLE);
-                            newsLayout.setVisibility(View.INVISIBLE);
+
+                            break;
                     }
                 }
                 @Override public void onTabUnselected(TabLayout.Tab tab) {}
